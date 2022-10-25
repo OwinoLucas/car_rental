@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse , HttpResponseRedirect
 from django.db.models import Q
-
+from django.contrib.auth.decorators import login_required
 from .models import Car, Order, PrivateMsg
 from .forms import CarForm, OrderForm, MessageForm
 
@@ -13,6 +13,7 @@ def home(request):
         "title" : "Car Rental"
     }
     return render(request,'home.html', context)
+
 
 def car_list(request):
     car = Car.objects.all()
@@ -86,7 +87,7 @@ def car_delete(request,id=None):
     return render(request, 'admin_index.html', context)
 
 #order
-
+@login_required
 def order_list(request):
     order = Order.objects.all()
 
@@ -113,6 +114,7 @@ def order_list(request):
     }
     return render(request, 'order_list.html', context)
 
+@login_required
 def order_detail(request, id=None):
     detail = get_object_or_404(Order,id=id)
     context = {
@@ -120,6 +122,7 @@ def order_detail(request, id=None):
     }
     return render(request, 'order_detail.html', context)
 
+@login_required
 def order_created(request):
     form = OrderForm(request.POST or None)
     if form.is_valid():
@@ -133,6 +136,7 @@ def order_created(request):
     }
     return render(request, 'order_create.html', context)
 
+@login_required
 def order_update(request, id=None):
     detail = get_object_or_404(Order, id=id)
     form = OrderForm(request.POST or None, instance=detail)
@@ -146,6 +150,7 @@ def order_update(request, id=None):
     }
     return render(request, 'order_create.html', context)
 
+@login_required
 def order_delete(request,id=None):
     query = get_object_or_404(Order,id = id)
     query.delete()

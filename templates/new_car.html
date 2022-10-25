@@ -14,9 +14,10 @@
         {% for ob in car %}
 
       <div class="col-sm-6 col-md-3">
-        <div class="thumbnail">
+        
+        <div class="card" style="width: 100%">
             {% if ob.image %}
-                <img src='{{ ob.image.url }}' class="img-responsive"/>
+                <img src='{{ ob.image.url }}' class="img-responsive" style="width: 100;"/>
             {% endif %}
           <div class="caption">
             <strong>{{ ob.car_name }}</strong>
