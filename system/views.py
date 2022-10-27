@@ -5,7 +5,10 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import Car, Order, PrivateMsg
 from .forms import CarForm, OrderForm, MessageForm
-
+# import requests
+# from requests.auth import HTTPBasicAuth
+# import json
+# from . credentials import MpesaAccessToken, LipanaMpesaPassword
 
 
 def home(request):
@@ -275,3 +278,41 @@ def msg_delete(request,id=None):
     query = get_object_or_404(PrivateMsg, id=id)
     query.delete()
     return HttpResponseRedirect("/message/")
+
+
+# def getAccessToken(request):
+#     consumer_key = 'v0z30UH3yG7p15oGdGQiAADMZadNwBF9'
+#     consumer_secret = 'q7dKYsWqFiH7JT5Y'
+#     api_URL = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+
+#     r = requests.get(api_URL, auth=HTTPBasicAuth(
+#         consumer_key, consumer_secret))
+#     mpesa_access_token = json.loads(r.text)
+#     validated_mpesa_access_token = mpesa_access_token['access_token']
+
+#     return HttpResponse(validated_mpesa_access_token)
+
+# def lipa_na_mpesa_online(request):
+#     access_token = MpesaAccessToken.validated_mpesa_access_token
+#     api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+#     headers = {
+#     'Content-Type': 'application/json',
+#     'Authorization': 'Bearer %s' % access_token
+#     }
+#     request = {
+#         "BusinessShortCode": LipanaMpesaPassword.Business_short_code,
+#         "Password": LipanaMpesaPassword.decode_password,
+#         "Timestamp": LipanaMpesaPassword.lipa_time,
+#         "TransactionType": "CustomerPayBillOnline",
+#         "Amount": 1,
+#         "PartyA": 254740237332,
+#         "PartyB": LipanaMpesaPassword.Business_short_code,
+#         "PhoneNumber": 254740237332,
+#         "CallBackURL": "https://sandbox.safaricom.co.ke/mpesa/",
+#         "AccountReference": "CAR RENTAL",
+#         "TransactionDesc": "Testing stk push"
+#     }
+
+#     response = requests.post(api_url, json=request, headers=headers)
+#     print(response.text)
+#     return HttpResponse('success')
