@@ -120,6 +120,7 @@ def order_list(request):
 @login_required
 def order_detail(request, id=None):
     detail = get_object_or_404(Order,id=id)
+    # amount
     context = {
         "detail": detail,
     }

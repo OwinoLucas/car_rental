@@ -17,10 +17,12 @@
   <a href="" class="list-group-item"><strong>From: </strong>{{detail.date}}</a>
   <a href="" class="list-group-item"><strong>To: </strong>{{detail.to}}</a>
   <a href="" class="list-group-item"><strong>Order Id: </strong>{{detail.id}}</a><br>
+  <a href="" class="list-group-item"><strong>Amount: </strong>{{detail.id}}</a><br>
+
   <div class="pull-right">
     <a href="{% url 'order_edit' detail.id %}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span> Edit Booking</button></a>
     <a href="{% url 'order_delete' detail.id %}"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span> Cancel Booking</button></a>
-    <a href=""><button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Print</button></a>
+    <a href=""><button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Pay</button></a>
 
   </div>
 </div>
