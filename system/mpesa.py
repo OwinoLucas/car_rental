@@ -3,6 +3,7 @@ from datetime import datetime
 import requests
 from requests.auth import HTTPBasicAuth
 import json
+import pdb
 
 time = datetime.now()
 now = time.strftime("%Y%m%d%H%M%S")
@@ -47,12 +48,13 @@ def lipa_na_mpesa(total_amount, phoneNumber):
         "TransactionDesc": "Pay to Car Rentals"
     }
 
-    response = requests.request("POST", api_url, headers = headers, data = payload)
+    response = requests.request("POST", api_url, headers = headers, json = payload)
+    # pdb. set_trace()
  
 
     print(response.text)
 
 
-lipa_na_mpesa(1, 254740237332)
+
 
 

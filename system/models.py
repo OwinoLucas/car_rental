@@ -71,9 +71,8 @@ class Car(models.Model):
         return "/car/%s/" % (self.id)
 
 class Order(models.Model):
-    #car_name = models.ForeignKey(Car, on_delete=models.CASCADE, blank=True, null=True)
-    car_name = models.CharField(max_length=100)
-    employee_name = models.CharField(max_length=100)
+    car_name = models.ForeignKey(Car, on_delete=models.CASCADE, blank=True, null=True)
+    driver = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     cell_no = models.CharField(max_length=15)
     address = models.TextField()
     date = models.DateTimeField()

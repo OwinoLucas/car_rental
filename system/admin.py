@@ -5,7 +5,7 @@ from .models import Car, Order, PrivateMsg
 class CarAdmin(admin.ModelAdmin):
     list_display = ("car_name", "image", "company_name")
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ("car_name", "date", "to", "employee_name")
+    list_display = ("car_name", "date", "to", "driver")
 
 class PrivateMsgAdmin(admin.ModelAdmin):
     list_display = ("name", "email", "message")

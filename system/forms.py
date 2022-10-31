@@ -17,7 +17,7 @@ class OrderForm(forms.ModelForm):
         model = Order
         fields = [
             "car_name",
-            "employee_name",
+            "driver",
             "cell_no",
             "address",
             "date",

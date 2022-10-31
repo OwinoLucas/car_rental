@@ -9,7 +9,7 @@ urlpatterns = [
 
     url(r'^carlist/$', views.car_list, name = "car_list"),
     url(r'^createOrder/$', views.order_created, name = "order_create"),
-
+    url(r'^addCar/$', views.car_created, name = "add_car"),
     url(r'^(?P<id>\d+)/edit/$', views.car_update, name = "car_edit"),
 
     url(r'^(?P<id>\d+)/$', views.car_detail, name = "car_detail"),
