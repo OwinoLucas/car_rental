@@ -11,13 +11,14 @@
     <strong><span class="glyphicon glyphicon-tag"></span> Booking Detail</strong>
   </p>
    <a href="" class="list-group-item"><strong>Car name: </strong>{{detail.car_name}}</a>
-  <a href="" class="list-group-item"><strong>Employee name: </strong>{{detail.employee_name}}</a>
+  <a href="" class="list-group-item"><strong>Driver: </strong>{{detail.driver}}</a>
   <a href="" class="list-group-item"><strong>Phone No: </strong>{{detail.cell_no}}</a>
   <a href="" class="list-group-item"><strong>Address: </strong>{{detail.address}}</a>
   <a href="" class="list-group-item"><strong>From: </strong>{{detail.date}}</a>
   <a href="" class="list-group-item"><strong>To: </strong>{{detail.to}}</a>
   <a href="" class="list-group-item"><strong>Order Id: </strong>{{detail.id}}</a><br>
-  <a href="" class="list-group-item"><strong>Amount: </strong>{{detail.id}}</a><br>
+  <a href="" class="list-group-item"><strong>Amount: </strong>{{amount}}</a><br>
+  
 
   <div class="pull-right">
     <a href="{% url 'order_edit' detail.id %}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span> Edit Booking</button></a>

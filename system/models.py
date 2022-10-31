@@ -72,7 +72,7 @@ class Car(models.Model):
 
 class Order(models.Model):
     car_name = models.ForeignKey(Car, on_delete=models.CASCADE, blank=True, null=True)
-    driver = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE, blank=True, null=True)
     cell_no = models.CharField(max_length=15)
     address = models.TextField()
     date = models.DateTimeField()

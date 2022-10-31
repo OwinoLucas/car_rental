@@ -5,10 +5,8 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import Car, Order, PrivateMsg
 from .forms import CarForm, OrderForm, MessageForm
-# import requests
-# from requests.auth import HTTPBasicAuth
-# import json
-# from . credentials import MpesaAccessToken, LipanaMpesaPassword
+from .mpesa import *
+
 
 
 def home(request):
@@ -121,8 +119,18 @@ def order_list(request):
 def order_detail(request, id=None):
     detail = get_object_or_404(Order,id=id)
     # amount
+    due_date = detail.to
+    from_date = detail.date
+    day = (due_date - from_date).days
+    cost = int(detail.car_name.cost_par_day)
+    amount = cost * day
+    phoneNumber = detail.driver.phone_number
+    print(phoneNumber)
+    #TODO
+    #ADD lipa_na_mpesa(amount, phoneNumber) method
     context = {
         "detail": detail,
+        "amount": amount
     }
     return render(request, 'order_detail.html', context)
 
