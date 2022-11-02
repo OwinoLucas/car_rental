@@ -12,20 +12,13 @@ class Driver(models.Model):
     last_name = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(max_length=60, blank=True, null=True)
     id_number = models.IntegerField(blank=True, null=True)
-
+    phone_number = models.CharField(max_length=70, blank=True)
     # profile_pic = models.ImageField(upload_to='employee_pics/',
     #                                 blank=True)
-    phone_number = models.CharField(max_length=70, blank=True)
 
     def __str__(self):
         return self.user.username
 
-    # @property
-    # def profile_pic_url(self):
-    #     if self.profile_pic and hasattr(self.profile_pic, 'url'):
-    #         return self.profile_pic.url
-    #     else:
-    #         return "/media/default.png"
 
     def save_driver(self):
         self.save()
@@ -48,6 +41,12 @@ class Driver(models.Model):
 
     post_save.connect(create_driver_profile, sender=User)
 
+    # @property
+    # def profile_pic_url(self):
+    #     if self.profile_pic and hasattr(self.profile_pic, 'url'):
+    #         return self.profile_pic.url
+    #     else:
+    #         return "/media/default.png"
 
 def uploaded_location(instance, filename):
     return ("%s/%s") %(instance.car_name,filename)

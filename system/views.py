@@ -1,12 +1,18 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse , HttpResponseRedirect
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import Car, Order, PrivateMsg
-from .forms import CarForm, OrderForm, MessageForm
-from .mpesa import *
-
+from .forms import *
+from .mpesa import lipa_na_mpesa
+from django.contrib import messages
+from django.contrib.auth import (
+    authenticate,
+    login,
+    logout,
+    get_user_model,
+)
 
 
 def home(request):
@@ -14,6 +20,57 @@ def home(request):
         "title" : "Car Rental"
     }
     return render(request,'home.html', context)
+
+def login_view(request):
+    form1 = UserLoginForm(request.POST or None)
+    if form1.is_valid():
+        username = form1.cleaned_data.get("username")
+        password = form1.cleaned_data.get("password")
+        user = authenticate(username=username, password=password)
+        if not request.user.is_staff:
+            login(request, user)
+            return redirect("/newcar/")
+    return render(request, "form.html", {"form": form1, "title": "Login"})
+
+def register_view(request):
+    form = UserRegisterForm(request.POST or None)
+    if form.is_valid():
+        user = form.save(commit=False)
+        password = form.cleaned_data.get("password")
+        user.set_password(password)
+        user.save()
+
+        return redirect("/profile/")
+    context = {
+        "title" : "Registration",
+        "form": form,
+    }
+    return render(request, "form.html", context)
+
+def logout_view(request):
+    logout(request)
+    return render(request, "home.html", {})
+
+def profile(request):
+   
+    if request.method == 'POST':
+        u_form = UserForm(request.POST,instance=request.user)
+        p_form = DriverForm(request.POST,request.FILES,instance=request.user.driver)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save() 
+            messages.success(request, f'Your account has been updated!')
+            return redirect('/login/')
+    else:
+        u_form = UserForm(instance=request.user)
+        p_form = DriverForm(instance=request.user.driver)
+
+    context = {
+        'u_form': u_form,
+        'p_form': p_form,
+        
+    }
+    return render(request, 'profile.html', context)
 
 
 def car_list(request):
@@ -118,19 +175,38 @@ def order_list(request):
 @login_required
 def order_detail(request, id=None):
     detail = get_object_or_404(Order,id=id)
-    # amount
     due_date = detail.to
     from_date = detail.date
     day = (due_date - from_date).days
     cost = int(detail.car_name.cost_par_day)
     amount = cost * day
-    phoneNumber = detail.driver.phone_number
-    print(phoneNumber)
-    #TODO
-    #ADD lipa_na_mpesa(amount, phoneNumber) method
+    
     context = {
         "detail": detail,
         "amount": amount
+    }
+    return render(request, 'order_detail.html', context)
+
+@login_required
+def payment(request, id=None):
+    current_user = request.user.driver
+    detail = get_object_or_404(Order,id=id)
+    # price logic
+    due_date = detail.to
+    from_date = detail.date
+    day = (due_date - from_date).days
+    cost = int(detail.car_name.cost_par_day)
+    amount = cost * day
+    phoneNumber = current_user.phone_number
+    if current_user:
+        payment = lipa_na_mpesa(amount, phoneNumber)
+        messages.success(request, f'You have successfully paid for out service!')
+        return redirect("/car_list/")
+    context = {
+        "detail": detail,
+        "amount": amount,
+        "payment": payment,
+        "current_user": current_user
     }
     return render(request, 'order_detail.html', context)
 

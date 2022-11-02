@@ -49,6 +49,7 @@ def lipa_na_mpesa(total_amount, phoneNumber):
     }
 
     response = requests.request("POST", api_url, headers = headers, json = payload)
+    
     # pdb. set_trace()
  
 
