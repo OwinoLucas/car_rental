@@ -21,17 +21,6 @@ def home(request):
     }
     return render(request,'home.html', context)
 
-def login_view(request):
-    form1 = UserLoginForm(request.POST or None)
-    if form1.is_valid():
-        username = form1.cleaned_data.get("username")
-        password = form1.cleaned_data.get("password")
-        user = authenticate(username=username, password=password)
-        if not request.user.is_staff:
-            login(request, user)
-            return redirect("/newcar/")
-    return render(request, "form.html", {"form": form1, "title": "Login"})
-
 def register_view(request):
     form = UserRegisterForm(request.POST or None)
     if form.is_valid():
@@ -40,12 +29,24 @@ def register_view(request):
         user.set_password(password)
         user.save()
 
-        return redirect("/profile/")
+        return redirect("/login")
     context = {
         "title" : "Registration",
         "form": form,
     }
     return render(request, "form.html", context)
+
+def login_view(request):
+    form1 = UserLoginForm(request.POST or None)
+    if form1.is_valid():
+        username = form1.cleaned_data.get("username")
+        password = form1.cleaned_data.get("password")
+        user = authenticate(request,username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("/newcar/")
+    return render(request, "form.html", {"form": form1, "title": "Login"})
+
 
 def logout_view(request):
     logout(request)
