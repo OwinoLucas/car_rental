@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import Car, Order, PrivateMsg
 from .forms import *
-from .mpesa import lipa_na_mpesa
+#from .mpesa import lipa_na_mpesa
 from django.contrib import messages
 from django.contrib.auth import (
     authenticate,
@@ -29,7 +29,7 @@ def register_view(request):
         user.set_password(password)
         user.save()
 
-        return redirect("/login")
+        return redirect("login")
     context = {
         "title" : "Registration",
         "form": form,
@@ -44,7 +44,7 @@ def login_view(request):
         user = authenticate(request,username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect("/newcar/")
+            return redirect("profile")
     return render(request, "form.html", {"form": form1, "title": "Login"})
 
 
@@ -53,22 +53,24 @@ def logout_view(request):
     return render(request, "home.html", {})
 
 def profile(request):
-   
-    if request.method == 'POST':
-        u_form = UserForm(request.POST,instance=request.user)
-        p_form = DriverForm(request.POST,request.FILES,instance=request.user.driver)
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save() 
-            messages.success(request, f'Your account has been updated!')
-            return redirect('/login/')
-    else:
-        u_form = UserForm(instance=request.user)
-        p_form = DriverForm(instance=request.user.driver)
+    current_user = request.user
+    if current_user:
+        if request.method == 'POST':
+            u_form = UserForm(request.POST,instance=request.user)
+            p_form = DriverForm(request.POST,request.FILES,instance=request.user.driver)
+            if u_form.is_valid() and p_form.is_valid():
+                u_form.save()
+                p_form.save() 
+                messages.success(request, f'Your account has been updated!')
+                return redirect('profile')
+        else:
+            u_form = UserForm(instance=request.user)
+            p_form = DriverForm(instance=request.user.driver)
 
     context = {
         'u_form': u_form,
         'p_form': p_form,
+        'current_user': current_user,
         
     }
     return render(request, 'profile.html', context)

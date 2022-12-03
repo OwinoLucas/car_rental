@@ -18,7 +18,8 @@
 <p class="list-group-item active">
     <strong><span class="glyphicon glyphicon-tag"></span> Book Your Car</strong>
   </p><br>
-<form method="POST" action="" >{% csrf_token %}
+<form method="POST" action="/" >
+  {% csrf_token %}
 
       {{form|crispy}}
 </div>
