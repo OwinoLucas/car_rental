@@ -5,7 +5,6 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import Car, Order, PrivateMsg
 from .forms import *
-#from .mpesa import lipa_na_mpesa
 from django.contrib import messages
 from django.contrib.auth import (
     authenticate,
@@ -13,6 +12,7 @@ from django.contrib.auth import (
     logout,
     get_user_model,
 )
+#from .mpesa import lipa_na_mpesa
 
 
 def home(request):
@@ -203,7 +203,7 @@ def payment(request, id=None):
     phoneNumber = current_user.phone_number
     if current_user:
         payment = lipa_na_mpesa(amount, phoneNumber)
-        messages.success(request, f'You have successfully paid for out service!')
+        messages.success(request, f'You have successfully paid for our service!')
         return redirect("/car_list/")
     context = {
         "detail": detail,
