@@ -5,14 +5,13 @@
 
 
 <div class ='col-sm-6 col-sm-offset-3'>
-  <strong><p style="color: red">Your booking was successfully.We will contact you soon regarding your booking.Your booking details are as bellow
-  </p></strong>
+  
   <p class="list-group-item active">
-    <strong><span class="glyphicon glyphicon-tag"></span> Booking Detail</strong>
+    <strong><span class="glyphicon glyphicon-tag"></span> Booking Details</strong>
   </p>
    <a href="" class="list-group-item"><strong>Car name: </strong>{{detail.car_name}}</a>
-  <a href="" class="list-group-item"><strong>Driver: </strong>{{detail.driver}}</a>
-  <a href="" class="list-group-item"><strong>Phone No: </strong>{{detail.driver.phone_number}}</a>
+  <a href="" class="list-group-item"><strong>Driver: </strong>{{driver}}</a>
+  <a href="" class="list-group-item"><strong>Phone No: </strong>{{dials}}</a>
   <a href="" class="list-group-item"><strong>Address: </strong>{{detail.address}}</a>
   <a href="" class="list-group-item"><strong>From: </strong>{{detail.date}}</a>
   <a href="" class="list-group-item"><strong>To: </strong>{{detail.to}}</a>
@@ -23,32 +22,10 @@
   <div class="pull-right">
     <a href="{% url 'order_edit' detail.id %}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span> Edit Booking</button></a>
     <a href="{% url 'order_delete' detail.id %}"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span> Cancel Booking</button></a>
-    <a href=""></a>
-    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalCenter"><span class="glyphicon glyphicon-pencil"></span> 
-      Pay
-    </button>
+    <a href="{% url 'payment' detail.id %}"><button type="button" class="btn btn-primary">Pay</button></a>
+    
 
   </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade mt-3" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Lipa Na MPESA</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        This is to confirm that you are paying for our rental services
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <a href="{% url 'payment' detail.id %}"><button type="button" class="btn btn-primary">Confirm</button></a>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock %}

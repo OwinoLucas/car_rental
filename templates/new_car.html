@@ -4,8 +4,13 @@
 
 {% block nav %}
         <li><a href="{% url 'newcar' %}"><span class="glyphicon glyphicon-align-justify"></span> Newly Added Car</a></li>
+        {% if current_user.is_staff %}
+        <li><a href="{% url 'add_car' %}"><span class="glyphicon glyphicon-star"></span> Add Car</a></li>
+        <li><a href="{% url 'adminIndex' %}"><span class="glyphicon glyphicon-star"></span> Car List</a></li>
+        {% else %}
         <li><a href="{% url 'popularcar' %}"><span class="glyphicon glyphicon-star"></span> Popular car</a></li>
         <li><a href="{% url 'contact' %}"><span class="glyphicon glyphicon-envelope"></span> Contact</a></li>
+        {% endif %}
         <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-share"></span> Logout {{request.user.username}}</a></li>
 {% endblock %}
 {% block body %}

@@ -51,6 +51,10 @@ class DriverForm(forms.ModelForm):
         model = Driver
         fields = ['first_name', 'last_name','phone_number', 'id_number']
 
+        def __init__(self, *args, **kwargs):
+            super(DriverForm, self).__init__(*args, **kwargs)
+            self.fields['phone_number'].widget.attrs['placeholder'] = self.fields['phone_number'].label or '2547XXXXXX'
+
 
 
 class CarForm(forms.ModelForm):
@@ -65,7 +69,6 @@ class CarForm(forms.ModelForm):
             "content",
         ]
 
-
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
@@ -77,6 +80,7 @@ class OrderForm(forms.ModelForm):
             "date",
             "to",
         ]
+
 class MessageForm(forms.ModelForm):
     class Meta:
         model = PrivateMsg

@@ -14,7 +14,7 @@ import os
 import django_heroku
 import dj_database_url
 from decouple import config, Csv
-
+from django.contrib.messages import constants as messages
 
 MODE = config("MODE", default="dev")
 SECRET_KEY = config('SECRET_KEY')
@@ -57,7 +57,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'v%()u+0&27nyn$&_=g$4tj9_gp-)%-w7g6+xyg@h+m#b%uly6='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-
+CSRF_TRUSTED_ORIGINS = ['http://domain.com','https://domain.com']
 
 #ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.ngrok.io']
 
@@ -82,7 +82,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -127,6 +127,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

@@ -42,12 +42,12 @@
     <td><strong>To</strong></td>
     <td><strong>Action</strong></td>
   </tr>
-
+    {% if current_user %}
       {% for ob in order %}
     <tr>
     <td>{{ob.id}} ORD</td>
-    <td>{{ob.driver.first_name}}</td>
-    <td>{{ob.driver.phone_number}}</td>
+    <td>{{current_user}}</td>
+    <td>{{current_user.phone_number}}</td>
     <td>{{ob.car_name}}</td>
     <td>{{ob.date}}</td>
     <td>{{ob.to}}</td>
@@ -59,6 +59,7 @@
     </td>
 </tr>
     {% endfor %}
+    {% endif %}
 
   </table>
 

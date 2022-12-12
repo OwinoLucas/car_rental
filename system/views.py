@@ -12,7 +12,9 @@ from django.contrib.auth import (
     logout,
     get_user_model,
 )
-#from .mpesa import lipa_na_mpesa
+from .mpesa import lipa_na_mpesa
+from django.contrib.messages import constants as messages
+from django.contrib import messages
 
 
 def home(request):
@@ -44,6 +46,7 @@ def login_view(request):
         user = authenticate(request,username=username, password=password)
         if user is not None:
             login(request, user)
+            messages.success(request, f'Your logged in!')
             return redirect("profile")
     return render(request, "form.html", {"form": form1, "title": "Login"})
 
@@ -62,7 +65,7 @@ def profile(request):
                 u_form.save()
                 p_form.save() 
                 messages.success(request, f'Your account has been updated!')
-                return redirect('profile')
+                return redirect('newcar')
         else:
             u_form = UserForm(instance=request.user)
             p_form = DriverForm(instance=request.user.driver)
@@ -147,6 +150,34 @@ def car_delete(request,id=None):
     }
     return render(request, 'admin_index.html', context)
 
+@login_required
+def user_list(request):
+    drivers = Driver.objects.all()
+
+    query = request.GET.get('q')
+    if query:
+        drivers = drivers.filter(
+            Q(username__icontains=query)|
+            Q(first_name__icontains=query)|
+            Q(last_name__icontains=query)
+        )
+
+    # pagination
+    paginator = Paginator(drivers, 4)  # Show 15 contacts per page
+    page = request.GET.get('page')
+    try:
+        drivers = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        drivers = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        drivers = paginator.page(paginator.num_pages)
+    context = {
+        'drivers': drivers,
+    }
+    return render(request, 'driver_list.html', context)
+
 #order
 @login_required
 def order_list(request):
@@ -155,8 +186,8 @@ def order_list(request):
     query = request.GET.get('q')
     if query:
         order = order.filter(
-            Q(movie_name__icontains=query)|
-            Q(employee_name__icontains=query)
+            Q(car_name__icontains=query)|
+            Q(driver__icontains=query)
         )
 
     # pagination
@@ -176,40 +207,48 @@ def order_list(request):
     return render(request, 'order_list.html', context)
 
 @login_required
+def your_order_list(request):
+    current_user = request.user.driver
+    if current_user:
+        order = Order.objects.filter(driver=current_user)
+
+
+    # pagination
+    paginator = Paginator(order, 4)  # Show 15 contacts per page
+    page = request.GET.get('page')
+    try:
+        order = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        order = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        order = paginator.page(paginator.num_pages)
+   
+    context = {
+        'current_user': current_user,
+        'order': order,
+    }
+    return render(request, 'your_orders.html', context)
+
+@login_required
 def order_detail(request, id=None):
-    detail = get_object_or_404(Order,id=id)
-    due_date = detail.to
-    from_date = detail.date
-    day = (due_date - from_date).days
-    cost = int(detail.car_name.cost_par_day)
-    amount = cost * day
+    current_user = request.user.driver
+    if current_user:
+        detail = get_object_or_404(Order,id=id)
+        driver = current_user
+        dials = current_user.phone_number
+        due_date = detail.to
+        from_date = detail.date
+        day = (due_date - from_date).days
+        cost = int(detail.car_name.cost_par_day)
+        amount = cost * day
     
     context = {
         "detail": detail,
-        "amount": amount
-    }
-    return render(request, 'order_detail.html', context)
-
-@login_required
-def payment(request, id=None):
-    current_user = request.user.driver
-    detail = get_object_or_404(Order,id=id)
-    # price logic
-    due_date = detail.to
-    from_date = detail.date
-    day = (due_date - from_date).days
-    cost = int(detail.car_name.cost_par_day)
-    amount = cost * day
-    phoneNumber = current_user.phone_number
-    if current_user:
-        payment = lipa_na_mpesa(amount, phoneNumber)
-        messages.success(request, f'You have successfully paid for our service!')
-        return redirect("/car_list/")
-    context = {
-        "detail": detail,
         "amount": amount,
-        "payment": payment,
-        "current_user": current_user
+        "driver": driver,
+        "dials": dials
     }
     return render(request, 'order_detail.html', context)
 
@@ -226,6 +265,30 @@ def order_created(request):
         "title": "Create Order"
     }
     return render(request, 'order_create.html', context)
+
+@login_required
+def payment(request, id=None):
+    current_user = request.user.driver
+    if current_user:
+        detail = get_object_or_404(Order,id=id)
+        # price logic
+        due_date = detail.to
+        from_date = detail.date
+        day = (due_date - from_date).days
+        cost = int(detail.car_name.cost_par_day)
+        amount = cost * day
+        phoneNumber = current_user.phone_number
+    
+        payment = lipa_na_mpesa(amount, phoneNumber)
+        messages.success(request, f'You have successfully paid for our service!')
+        return redirect("your_order_list")
+    context = {
+        "detail": detail,
+        "amount": amount,
+        "payment": payment,
+        "current_user": current_user
+    }
+    return render(request, 'order_detail.html', context)
 
 @login_required
 def order_update(request, id=None):
@@ -247,7 +310,9 @@ def order_delete(request,id=None):
     query.delete()
     return HttpResponseRedirect("/listOrder/")
 
+
 def newcar(request):
+    current_user = request.user
     new = Car.objects.order_by('-id')
     #seach
     query = request.GET.get('q')
@@ -272,6 +337,7 @@ def newcar(request):
         new = paginator.page(paginator.num_pages)
     context = {
         'car': new,
+        "current_user": current_user
     }
     return render(request, 'new_car.html', context)
 
@@ -367,40 +433,3 @@ def msg_delete(request,id=None):
     query.delete()
     return HttpResponseRedirect("/message/")
 
-
-# def getAccessToken(request):
-#     consumer_key = 'v0z30UH3yG7p15oGdGQiAADMZadNwBF9'
-#     consumer_secret = 'q7dKYsWqFiH7JT5Y'
-#     api_URL = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
-
-#     r = requests.get(api_URL, auth=HTTPBasicAuth(
-#         consumer_key, consumer_secret))
-#     mpesa_access_token = json.loads(r.text)
-#     validated_mpesa_access_token = mpesa_access_token['access_token']
-
-#     return HttpResponse(validated_mpesa_access_token)
-
-# def lipa_na_mpesa_online(request):
-#     access_token = MpesaAccessToken.validated_mpesa_access_token
-#     api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
-#     headers = {
-#     'Content-Type': 'application/json',
-#     'Authorization': 'Bearer %s' % access_token
-#     }
-#     request = {
-#         "BusinessShortCode": LipanaMpesaPassword.Business_short_code,
-#         "Password": LipanaMpesaPassword.decode_password,
-#         "Timestamp": LipanaMpesaPassword.lipa_time,
-#         "TransactionType": "CustomerPayBillOnline",
-#         "Amount": 1,
-#         "PartyA": 254740237332,
-#         "PartyB": LipanaMpesaPassword.Business_short_code,
-#         "PhoneNumber": 254740237332,
-#         "CallBackURL": "https://sandbox.safaricom.co.ke/mpesa/",
-#         "AccountReference": "CAR RENTAL",
-#         "TransactionDesc": "Testing stk push"
-#     }
-
-#     response = requests.post(api_url, json=request, headers=headers)
-#     print(response.text)
-#     return HttpResponse('success')

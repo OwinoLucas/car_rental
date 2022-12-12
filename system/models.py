@@ -13,8 +13,7 @@ class Driver(models.Model):
     email = models.EmailField(max_length=60, blank=True, null=True)
     id_number = models.IntegerField(blank=True, null=True)
     phone_number = models.CharField(max_length=70, blank=True)
-    # profile_pic = models.ImageField(upload_to='employee_pics/',
-    #                                 blank=True)
+  
 
     def __str__(self):
         return self.user.username
@@ -41,12 +40,9 @@ class Driver(models.Model):
 
     post_save.connect(create_driver_profile, sender=User)
 
-    # @property
-    # def profile_pic_url(self):
-    #     if self.profile_pic and hasattr(self.profile_pic, 'url'):
-    #         return self.profile_pic.url
-    #     else:
-    #         return "/media/default.png"
+    def get_absolute_url(self):
+        return "/driver/%s/" % (self.id)
+
 
 def uploaded_location(instance, filename):
     return ("%s/%s") %(instance.car_name,filename)
@@ -79,9 +75,12 @@ class Order(models.Model):
 
     def __str__(self):
         return self.car_name
+    
+    class Meta:
+        ordering = ["-pk"]
 
     def get_absolute_url(self):
-        return "/car/detail/%s/" % (self.id)
+        return "/detail/%s/" % (self.id)
 
 class PrivateMsg(models.Model):
     name = models.CharField(max_length=200)

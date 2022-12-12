@@ -20,12 +20,13 @@
 <div class ='col-sm-5 col-sm-offset-3'>
     <h1>{{ title }}</h1><hr>
 
-    <form method="POST" action="">{% csrf_token %}
+    <form method="POST" action="">
+      {% csrf_token %}
       {{form|crispy}}
         <div class="pull-right">
             <input type="submit" class="btn btn-primary" value="{{ title }}"/>
         </div>
 
-</form>
+    </form>
 </div>
 {% endblock %}

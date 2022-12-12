@@ -34,27 +34,27 @@
   <!-- Table -->
   <table class="table table-bordered table-striped table-hover">
    <tr>
-     <td><strong>Order ID</strong></td>
-   <td><strong>Driver Name</strong></td>
-   <td><strong>Phone No</strong></td>
-    <td><strong>Car Name</strong></td>
-    <td><strong>From</strong></td>
-    <td><strong>To</strong></td>
+     <td><strong>Driver ID</strong></td>
+   <td><strong>First Name</strong></td>
+   <td><strong>Last Name</strong></td>
+    <td><strong>Phone No</strong></td>
+    <td><strong>ID no</strong></td>
+    <td><strong>Email</strong></td>
     <td><strong>Action</strong></td>
   </tr>
 
-      {% for ob in order %}
+      {% for ob in drivers %}
     <tr>
     <td>{{ob.id}} ORD</td>
-    <td>{{ob.driver.first_name}}</td>
-    <td>{{ob.driver.phone_number}}</td>
-    <td>{{ob.car_name}}</td>
-    <td>{{ob.date}}</td>
-    <td>{{ob.to}}</td>
+    <td>{{ob.first_name}}</td>
+    <td>{{ob.last_name}}</td>
+    <td>{{ob.phone_number}}</td>
+    <td>{{ob.id_number}}</td>
+    <td>{{ob.email}}</td>
     <td>
 
-         <a href="{% url 'order_detail' ob.id %}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-eye-open"></span></button></a>
-         <a href="{% url 'order_delete' ob.id %}"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button></a>
+         <a href=""><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-eye-open"></span></button></a>
+         <a href=""><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button></a>
 
     </td>
 </tr>
@@ -66,15 +66,15 @@
 
 <nav>
   <ul class="pager">
-    <li class="previous">{% if order.has_previous %}
+    <li class="previous">{% if drivers.has_previous %}
             <a href="?page={{ order.previous_page_number }}" style="background-color:#1aa3ff !important; color: white !important;"><span aria-hidden="true">&larr;</span> Previous</a>
     {% endif %}
     </li>
       <li class="previous">
-         <strong> Page {{ order.number }} of {{ order.paginator.num_pages }}.</strong>
+         <strong> Page {{ drivers.number }} of {{ drivers.paginator.num_pages }}.</strong>
 
     </li>
-    <li class="next">{% if order.has_next %}
+    <li class="next">{% if drivers.has_next %}
             <a href="?page={{ order.next_page_number }}" style="background-color:#1aa3ff !important; color: white !important;">
         Next <span aria-hidden="true">&rarr;</span></a>{% endif %}</li>
   </ul>

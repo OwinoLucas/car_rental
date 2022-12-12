@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^$', home, name = "home"),
     url(r'^admin_carlist/$', admin_car_list, name='adminIndex'),
     url(r'^listOrder/$', order_list, name = "order_list"),
+    url(r'^yourOrders/$', your_order_list, name = "your_order_list"),
     url(r'^(?P<id>\d+)/editOrder/$', order_update, name = "order_edit"),
     url(r'^(?P<id>\d+)/deleteOrder/$', order_delete, name = "order_delete"),
     url(r'^create/$', car_created, name = "car_create"),
