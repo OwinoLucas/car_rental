@@ -35,18 +35,19 @@ def lipa_na_mpesa(total_amount, phoneNumber):
     }
 
     payload = {
-        "BusinessShortCode": "174379",
+        "BusinessShortCode": 174379,
         "Password": decoded_password,
         "Timestamp": now,
         "TransactionType": "CustomerPayBillOnline",
         "Amount": total_amount,
         "PartyA": phoneNumber,
-        "PartyB": "174379",
+        "PartyB": 174379,
         "PhoneNumber": phoneNumber,
         "CallBackURL": "https://mydomain.com/path",
         "AccountReference": "Car Rental",
         "TransactionDesc": "Pay to Car Rentals"
     }
+ 
 
     response = requests.request("POST", api_url, headers = headers, json = payload)
     
